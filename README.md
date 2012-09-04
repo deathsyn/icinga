@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs and configures Nagios 3 for a server and NRPE for clients using Chef search capabilities.
+Installs and configures Icinga 1.7 for a server and nagios-plugins for clients with ssh for plugin execution, using Chef search capabilities.  This cookbook is based on Opscode's nagios cookbook, but is modified to fit the environments I more typically deploy (nagios under lighttpd, PAM auth, etc.)  The changes are not yet complete.
 
 Requirements
 ============

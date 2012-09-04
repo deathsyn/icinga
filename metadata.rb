@@ -1,14 +1,14 @@
-maintainer        "Opscode, Inc."
-maintainer_email  "cookbooks@opscode.com"
+maintainer        "Kevin Berry"
+maintainer_email  "kevin@opensourcealchemist.com"
 license           "Apache 2.0"
-description       "Installs and configures nagios"
+description       "Installs and configures icinga, and plugins on clients"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           "1.3.1"
 
-recipe "nagios", "Includes the client recipe."
-recipe "nagios::client", "Installs and configures a nagios client with nrpe"
-recipe "nagios::server", "Installs and configures a nagios server"
-recipe "nagios::pagerduty", "Integrates contacts w/ PagerDuty API"
+recipe "icinga", "Includes the client recipe."
+recipe "icinga::client", "Installs and configures a nagios client with nrpe"
+recipe "icinga::server", "Installs and configures a nagios server"
+recipe "icinga::pagerduty", "Integrates contacts w/ PagerDuty API"
 
 %w{ apache2 build-essential php nginx nginx_simplecgi }.each do |cb|
   depends cb
