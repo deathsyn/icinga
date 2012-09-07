@@ -1,3 +1,9 @@
+icinga
+======
+
+nagios
+======
+
 ## v1.3.0:
 
 * [COOK-715] - don't source /etc/sysconfig/network on non-RHEL

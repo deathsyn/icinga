@@ -1,13 +1,15 @@
 #
+# Author:: Kevin Berry <kberry@opensourcealchemist.com>
 # Author:: Joshua Sierles <joshua@37signals.com>
 # Author:: Joshua Timberman <joshua@opscode.com>
 # Author:: Nathan Haneysmith <nathan@opscode.com>
 # Author:: Seth Chisamore <schisamo@opscode.com>
-# Cookbook Name:: nagios
-# Definition:: nagios_conf
+# Cookbook Name:: icinga
+# Definition:: icinga_conf
 #
 # Copyright 2009, 37signals
 # Copyright 2009-2011, Opscode, Inc
+# Copyright 2012, Kevin Berry
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,17 +23,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-define :nagios_conf, :variables => {}, :config_subdir => true do
+define :icinga_conf, :variables => {}, :config_subdir => true do
   
-  conf_dir = params[:config_subdir] ? node['nagios']['config_dir'] : node['nagios']['conf_dir']
+  conf_dir = params[:config_subdir] ? node['icinga']['config_dir'] : node['icinga']['conf_dir']
 
   template "#{conf_dir}/#{params[:name]}.cfg" do
-    owner node['nagios']['user']
-    group node['nagios']['group']
+    owner node['icinga']['user']
+    group node['icinga']['group']
     source "#{params[:name]}.cfg.erb"
     mode 0644
     variables params[:variables]
-    notifies :reload, "service[nagios]"
+    notifies :reload, "service[icinga]"
     backup 0
   end
 end

@@ -1,6 +1,6 @@
 #
 # Author:: Jake Vanderdray <jvanderdray@customink.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Resource:: nrpecheck
 #
 # Copyright 2011, CustomInk LLC

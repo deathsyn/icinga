@@ -1,6 +1,6 @@
 #
 # Author:: Jake Vanderdray <jvanderdray@customink.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Provider:: nrpecheck
 #
 # Copyright 2011, CustomInk LLC
@@ -18,13 +18,13 @@
 # limitations under the License.
 
 action :add do
-  Chef::Log.info "Adding #{new_resource.command_name} to #{node['nagios']['nrpe']['conf_dir']}/nrpe.d/"
-  command = new_resource.command || "#{node['nagios']['plugin_dir']}/#{new_resource.command_name}"
+  Chef::Log.info "Adding #{new_resource.command_name} to #{node['icinga']['nrpe']['conf_dir']}/nrpe.d/"
+  command = new_resource.command || "#{node['icinga']['plugin_dir']}/#{new_resource.command_name}"
   file_contents = "command[#{new_resource.command_name}]=#{command}"
   file_contents += " -w #{new_resource.warning_condition}" unless new_resource.warning_condition.nil?
   file_contents += " -c #{new_resource.critical_condition}" unless new_resource.critical_condition.nil?
   file_contents += " #{new_resource.parameters}" unless new_resource.parameters.nil?
-  file "#{node['nagios']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg" do
+  file "#{node['icinga']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg" do
     owner "root"
     group "root"
     mode 00644
@@ -35,9 +35,9 @@ action :add do
 end
 
 action :remove do
-  if ::File.exists?("#{node['nagios']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg")
-    Chef::Log.info "Removing #{new_resource.command_name} from #{node['nagios']['nrpe']['conf_dir']}/nrpe.d/"
-    file "#{node['nagios']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg" do
+  if ::File.exists?("#{node['icinga']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg")
+    Chef::Log.info "Removing #{new_resource.command_name} from #{node['icinga']['nrpe']['conf_dir']}/nrpe.d/"
+    file "#{node['icinga']['nrpe']['conf_dir']}/nrpe.d/#{new_resource.command_name}.cfg" do
       action :delete
       notifies :restart, resources(:service => "nagios-nrpe-server")
     end

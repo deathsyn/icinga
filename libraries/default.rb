@@ -1,9 +1,11 @@
 #
 # Author:: Joshua Sierles <joshua@37signals.com>
-# Cookbook Name:: nagios
+# Author:: Kevin Berry <kevin@opensourcealchemist.com>
+# Cookbook Name:: icinga
 # Library:: default
 #
 # Copyright 2009, 37signals
+# Copyright 2012, Kevin Berry
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,18 +19,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-def nagios_boolean(true_or_false)
+def icinga_boolean(true_or_false)
   true_or_false ? "1" : "0"
 end
 
-def nagios_interval(seconds)
-  if seconds.to_i < node['nagios']['interval_length'].to_i
-    raise ArgumentError, "Specified nagios interval of #{seconds} seconds must be equal to or greater than the default interval length of #{node['nagios']['interval_length']}"
+def icinga_interval(seconds)
+  if seconds.to_i < node['icinga']['interval_length'].to_i
+    raise ArgumentError, "Specified icinga interval of #{seconds} seconds must be equal to or greater than the default interval length of #{node['icinga']['interval_length']}"
   end
-  interval = seconds / node['nagios']['interval_length']
+  interval = seconds / node['icinga']['interval_length']
   interval
 end
 
-def nagios_attr(name)
-  node['nagios'][name]
+def icinga_attr(name)
+  node['icinga'][name]
 end
