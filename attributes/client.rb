@@ -34,26 +34,26 @@ else
   default['nagios']['nrpe']['pidfile'] = '/var/run/nrpe.pid'
 end
 
-default['nagios']['nrpe']['home']              = "/usr/lib/nagios"
-default['nagios']['nrpe']['conf_dir']          = "/etc/nagios"
-default['nagios']['nrpe']['dont_blame_nrpe']   = "0"
-default['nagios']['nrpe']['command_timeout']   = "60"
+default['icinga']['nrpe']['home']              = "/usr/lib/nagios"
+default['icinga']['nrpe']['conf_dir']          = "/etc/icinga"
+default['icinga']['nrpe']['dont_blame_nrpe']   = "0"
+default['icinga']['nrpe']['command_timeout']   = "60"
 
 # for plugin from source installation
-default['nagios']['plugins']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagiosplug'
-default['nagios']['plugins']['version']  = '1.4.15'
-default['nagios']['plugins']['checksum'] = '51136e5210e3664e1351550de3aff4a766d9d9fea9a24d09e37b3428ef96fa5b'
+default['icinga']['plugins']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagiosplug'
+default['icinga']['plugins']['version']  = '1.4.16'
+default['icinga']['plugins']['checksum'] = 'b0caf07e0084e9b7f10fdd71cbd3ebabcd85ad78df64da360b51233b0e73b2bd'
 
 # for nrpe from source installation
-default['nagios']['nrpe']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagios'
-default['nagios']['nrpe']['version']  = '2.12'
-default['nagios']['nrpe']['checksum'] = '7e8d093abef7d7ffc7219ad334823bdb612121df40de2dbaec9c6d0adeb04cfc'
+default['icinga']['nrpe']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagios'
+default['icinga']['nrpe']['version']  = '2.13'
+default['icinga']['nrpe']['checksum'] = 'bac8f7eb9daddf96b732a59ffc5762b1cf073fb70f6881d95216ebcd1254a254'
 
-default['nagios']['checks']['memory']['critical'] = 150
-default['nagios']['checks']['memory']['warning']  = 250
-default['nagios']['checks']['load']['critical']   = "30,20,10"
-default['nagios']['checks']['load']['warning']    = "15,10,5"
-default['nagios']['checks']['smtp_host'] = String.new
+default['icinga']['checks']['memory']['critical'] = 150
+default['icinga']['checks']['memory']['warning']  = 250
+default['icinga']['checks']['load']['critical']   = "30,20,10"
+default['icinga']['checks']['load']['warning']    = "15,10,5"
+default['icinga']['checks']['smtp_host'] = String.new
 
-default['nagios']['server_role'] = "monitoring"
-default['nagios']['multi_environment_monitoring'] = false
+default['icinga']['server_role'] = "monitoring"
+default['icinga']['multi_environment_monitoring'] = false

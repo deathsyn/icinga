@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-default['nagios']['user'] = "nagios"
-default['nagios']['group'] = "nagios"
+default['icinga']['user'] = "nagios"
+default['icinga']['group'] = "nagios"
 
-default['nagios']['plugin_dir'] = "/usr/lib/nagios/plugins"
+default['icinga']['plugin_dir'] = "/usr/lib/nagios/plugins"
