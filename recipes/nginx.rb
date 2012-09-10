@@ -1,4 +1,4 @@
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: nginx
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-if node["nagios"]["server"]["stop_apache"]
+if node["icinga"]["server"]["stop_apache"]
   service 'apache2' do
     action :stop
   end
@@ -29,10 +29,10 @@ via_pkg = value_for_platform(
 )
 
 if(via_pkg.nil?)
-  node.set['nagios']['server']['nginx_dispatch'] = :both
+  node.set['icinga']['server']['nginx_dispatch'] = :both
 elsif(via_pkg == false)
   node.set["nginx"]["install_method"] = 'source'
-  node.set['nagios']['server']['nginx_dispatch'] = :both
+  node.set['icinga']['server']['nginx_dispatch'] = :both
 end
 include_recipe "nginx"
 
@@ -49,7 +49,7 @@ else
   public_domain = node['domain']
 end
 
-case dispatch_type = node['nagios']['server']['nginx_dispatch'].to_sym
+case dispatch_type = node['icinga']['server']['nginx_dispatch'].to_sym
 when :cgi
   node.set["nginx_simplecgi"]["cgi"] = true
   include_recipe 'nginx_simplecgi::setup'
@@ -68,22 +68,22 @@ template File.join(node['nginx']['dir'], 'sites-available', 'nagios3.conf') do
   source 'nginx.conf.erb'
   mode 00644
   pem = File.join(
-    node['nagios']['conf_dir'],
+    node['icinga']['conf_dir'],
     'certificates',
     'nagios-server.pem'
   )
   variables(
     :public_domain => public_domain,
-    :listen_port => node['nagios']['http_port'],
-    :https => node['nagios']['https'],
+    :listen_port => node['icinga']['http_port'],
+    :https => node['icinga']['https'],
     :cert_file => pem,
     :cert_key => pem,
-    :docroot => node['nagios']['docroot'],
-    :log_dir => node['nagios']['log_dir'],
+    :docroot => node['icinga']['docroot'],
+    :log_dir => node['icinga']['log_dir'],
     :fqdn => node['fqdn'],
     :chef_env =>  node.chef_environment == '_default' ? 'default' : node.chef_environment,
     :htpasswd_file => File.join(
-      node['nagios']['conf_dir'],
+      node['icinga']['conf_dir'],
       'htpasswd.users'
     ),
     :cgi => [:cgi, :both].include?(dispatch_type.to_sym),

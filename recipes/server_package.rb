@@ -1,6 +1,6 @@
 #
 # Author:: Seth Chisamore <schisamo@opscode.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: server_package
 #
 # Copyright 2011, Opscode, Inc
@@ -19,11 +19,11 @@
 #
 
 %w{ 
-  nagios3
+  icinga
   nagios-nrpe-plugin
-  nagios-images
+  icinga-images
 }.each do |pkg|
   package pkg
 end
 
-include_recipe "nagios::client"
+include_recipe "icinga::client"

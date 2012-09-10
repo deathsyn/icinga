@@ -1,7 +1,7 @@
 #
 # Author:: Joshua Timberman <joshua@opscode.com>
 # Author:: Joshua Sierles <joshua@37signals.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: default
 #
 # Copyright 2008-2009, Opscode, Inc
@@ -20,4 +20,4 @@
 # limitations under the License.
 #
 
-include_recipe "nagios::client"
+include_recipe "icinga::client"

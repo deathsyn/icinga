@@ -1,9 +1,11 @@
 #
 # Author:: Seth Chisamore <schisamo@opscode.com>
+# Author:: Kevin Berry <kevin@opensourcealchemist.com>
 # Cookbook Name:: icinga
-# Recipe:: client_package
+# Recipe:: nrpe_client_package
 #
 # Copyright 2011, Opscode, Inc
+# Copyright 2012, Kevin Berry
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +20,6 @@
 # limitations under the License.
 #
 
-%w{
-  nagios-plugins
-  nagios-plugins-basic
-  nagios-plugins-standard
-}.each do |pkg|
-  package pkg
-end
+include_recipe "icinga::client_package"
+
+package "nagios-nrpe-server"

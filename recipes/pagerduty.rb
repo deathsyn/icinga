@@ -1,6 +1,6 @@
 #
 # Author:: Jake Vanderdray <jvanderdray@customink.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: pagerduty
 #
 # Copyright 2011, CustomInk LLC
@@ -41,14 +41,14 @@ package "libcrypt-ssleay-perl" do
   action :install
 end
 
-template "#{node['nagios']['config_dir']}/pagerduty_nagios.cfg" do
+template "#{node['icinga']['config_dir']}/pagerduty_icinga.cfg" do
   owner "nagios"
   group "nagios"
   mode 00644
   source "pagerduty_nagios.cfg.erb"
 end
 
-remote_file "#{node['nagios']['plugin_dir']}/pagerduty_nagios.pl" do
+remote_file "#{node['icinga']['plugin_dir']}/pagerduty_nagios.pl" do
   owner "root"
   group "root"
   mode 00755
@@ -59,5 +59,5 @@ end
 cron "Flush Pagerduty" do
   user "nagios"
   mailto "root@localhost"
-  command "#{node['nagios']['plugin_dir']}/pagerduty_nagios.pl flush"
+  command "#{node['icinga']['plugin_dir']}/pagerduty_nagios.pl flush"
 end

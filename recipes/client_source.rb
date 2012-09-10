@@ -1,6 +1,6 @@
 #
 # Author:: Seth Chisamore <schisamo@opscode.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: client_source
 #
 # Copyright 2011, Opscode, Inc
@@ -34,19 +34,19 @@ pkgs.each do |pkg|
   end
 end
 
-user node['nagios']['user'] do
+user node['icinga']['user'] do
   system true
 end
 
-group node['nagios']['group'] do
-  members [ node['nagios']['user'] ]
+group node['icinga']['group'] do
+  members [ node['icinga']['user'] ]
 end
 
-plugins_version = node['nagios']['plugins']['version']
+plugins_version = node['icinga']['plugins']['version']
 
 remote_file "#{Chef::Config[:file_cache_path]}/nagios-plugins-#{plugins_version}.tar.gz" do
-  source "#{node['nagios']['plugins']['url']}/nagios-plugins-#{plugins_version}.tar.gz"
-  checksum node['nagios']['plugins']['checksum']
+  source "#{node['icinga']['plugins']['url']}/nagios-plugins-#{plugins_version}.tar.gz"
+  checksum node['icinga']['plugins']['checksum']
   action :create_if_missing
 end
 
@@ -55,50 +55,13 @@ bash "compile-nagios-plugins" do
   code <<-EOH
     tar zxvf nagios-plugins-#{plugins_version}.tar.gz
     cd nagios-plugins-#{plugins_version}
-    ./configure --with-nagios-user=#{node['nagios']['user']} \
-                --with-nagios-group=#{node['nagios']['group']} \
+    ./configure --with-nagios-user=#{node['icinga']['user']} \
+                --with-nagios-group=#{node['icinga']['group']} \
                 --prefix=/usr \
-                --libexecdir=#{node['nagios']['plugin_dir']}
+                --libexecdir=#{node['icinga']['plugin_dir']}
     make -s
     make install
   EOH
-  creates "#{node['nagios']['plugin_dir']}/check_users"
+  creates "#{node['icinga']['plugin_dir']}/check_users"
 end
 
-nrpe_version = node['nagios']['nrpe']['version']
-
-remote_file "#{Chef::Config[:file_cache_path]}/nrpe-#{nrpe_version}.tar.gz" do
-  source "#{node['nagios']['nrpe']['url']}/nrpe-#{nrpe_version}.tar.gz"
-  checksum node['nagios']['nrpe']['checksum']
-  action :create_if_missing
-end
-
-bash "compile-nagios-plugins" do
-  cwd Chef::Config[:file_cache_path]
-  code <<-EOH
-    tar zxvf nrpe-#{nrpe_version}.tar.gz
-    cd nrpe-#{nrpe_version}
-    ./configure --prefix=/usr \
-                --sysconfdir=/etc \
-                --localstatedir=/var \
-                --libexecdir=#{node['nagios']['plugin_dir']} \
-                --libdir=#{node['nagios']['nrpe']['home']} \
-                --enable-command-args
-    make -s
-    make install
-  EOH
-  creates "#{node['nagios']['plugin_dir']}/check_nrpe"
-end
-
-template "/etc/init.d/nagios-nrpe-server" do
-  source "nagios-nrpe-server.erb"
-  owner "root"
-  group "root"
-  mode  00755
-end
-
-directory node['nagios']['nrpe']['conf_dir'] do
-  owner "root"
-  group "root"
-  mode  00755
-end

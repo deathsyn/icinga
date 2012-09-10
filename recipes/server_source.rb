@@ -1,6 +1,6 @@
 #
 # Author:: Seth Chisamore <schisamo@opscode.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: icinga
 # Recipe:: server_source
 #
 # Copyright 2011, Opscode, Inc
@@ -21,17 +21,17 @@
 # Package pre-reqs
 
 include_recipe "build-essential"
-include_recipe "nagios::client"
+include_recipe "icinga::client"
 include_recipe "php"
 include_recipe "php::module_gd"
 
-web_srv = node['nagios']['server']['web_server'].to_sym
+web_srv = node['icinga']['server']['web_server'].to_sym
 
 case web_srv
 when :apache
-  include_recipe "nagios::apache"
+  include_recipe "icinga::apache"
 else
-  include_recipe "nagios::nginx"
+  include_recipe "icinga::nginx"
 end
 
 pkgs = value_for_platform(
@@ -48,57 +48,57 @@ pkgs.each do |pkg|
   end
 end
 
-group node['nagios']['group'] do
+group node['icinga']['group'] do
   members [
-    node['nagios']['user'],
+    node['icinga']['user'],
     web_srv == :nginx ? node['nginx']['user'] : node['apache']['user']
   ]
   action :modify
 end
 
-version = node['nagios']['server']['version']
+version = node['icinga']['server']['version']
 
-remote_file "#{Chef::Config[:file_cache_path]}/nagios-#{version}.tar.gz" do
-  source "http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-#{version}.tar.gz"
-  checksum node['nagios']['server']['checksum']
+remote_file "#{Chef::Config[:file_cache_path]}/icinga-#{version}.tar.gz" do
+  source "http://prdownloads.sourceforge.net/sourceforge/icinga/icinga-#{version}.tar.gz"
+  checksum node['icinga']['server']['checksum']
   action :create_if_missing
 end
 
-bash "compile-nagios" do
+bash "compile-icinga" do
   cwd Chef::Config[:file_cache_path]
   code <<-EOH
-    tar zxvf nagios-#{version}.tar.gz
-    cd nagios
+    tar zxvf icinga-#{version}.tar.gz
+    cd icinga
     ./configure --prefix=/usr \
         --mandir=/usr/share/man \
         --bindir=/usr/sbin \
-        --sbindir=/usr/lib/cgi-bin/nagios3 \
-        --datadir=#{node['nagios']['docroot']} \
-        --sysconfdir=#{node['nagios']['conf_dir']} \
+        --sbindir=/usr/lib/cgi-bin/icinga \
+        --datadir=#{node['icinga']['docroot']} \
+        --sysconfdir=#{node['icinga']['conf_dir']} \
         --infodir=/usr/share/info \
-        --libexecdir=#{node['nagios']['plugin_dir']} \
-        --localstatedir=#{node['nagios']['state_dir']} \
+        --libexecdir=#{node['icinga']['plugin_dir']} \
+        --localstatedir=#{node['icinga']['state_dir']} \
         --enable-event-broker \
-        --with-nagios-user=#{node['nagios']['user']} \
-        --with-nagios-group=#{node['nagios']['group']} \
-        --with-command-user=#{node['nagios']['user']} \
-        --with-command-group=#{node['nagios']['group']} \
+        --with-icinga-user=#{node['icinga']['user']} \
+        --with-icinga-group=#{node['icinga']['group']} \
+        --with-command-user=#{node['icinga']['user']} \
+        --with-command-group=#{node['icinga']['group']} \
         --with-init-dir=/etc/init.d \
-        --with-lockfile=#{node['nagios']['run_dir']}/nagios3.pid \
+        --with-lockfile=#{node['icinga']['run_dir']}/icinga.pid \
         --with-mail=/usr/bin/mail \
         --with-perlcache \
-        --with-htmurl=/nagios3 \
-        --with-cgiurl=/cgi-bin/nagios3
+        --with-htmurl=/icinga \
+        --with-cgiurl=/cgi-bin/icinga
     make all
     make install
     make install-init
     make install-config
     make install-commandmode
   EOH
-  creates "/usr/sbin/nagios"
+  creates "/usr/sbin/icinga"
 end
 
-directory "#{node['nagios']['conf_dir']}/conf.d" do
+directory "#{node['icinga']['conf_dir']}/conf.d" do
   owner "root"
   group "root"
   mode 00755
@@ -106,22 +106,22 @@ end
 
 %w{ cache_dir log_dir run_dir }.each do |dir|
 
-  directory node['nagios'][dir] do
-    owner node['nagios']['user']
-    group node['nagios']['group']
+  directory node['icinga'][dir] do
+    owner node['icinga']['user']
+    group node['icinga']['group']
     mode 00755
   end
 
 end
 
-directory "/usr/lib/nagios3" do
-  owner node['nagios']['user']
-  group node['nagios']['group']
+directory "/usr/lib/icinga" do
+  owner node['icinga']['user']
+  group node['icinga']['group']
   mode 00755
 end
 
-link "#{node['nagios']['conf_dir']}/stylesheets" do
-  to "#{node['nagios']['docroot']}/stylesheets"
+link "#{node['icinga']['conf_dir']}/stylesheets" do
+  to "#{node['icinga']['docroot']}/stylesheets"
 end
 
 if web_srv == :apache

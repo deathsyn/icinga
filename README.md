@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs and configures Icinga 1.7 for a server and nagios-plugins for clients with ssh for plugin execution, using Chef search capabilities.  This cookbook is based on Opscode's nagios cookbook, but is modified to fit the environments I more typically deploy (nagios under lighttpd, PAM auth, etc.)  The changes are not yet complete.
+Installs and configures Icinga 1.7 for a server and nagios-plugins for clients with ssh for plugin execution, using Chef search capabilities.  This cookbook is based on Opscode's nagios cookbook, but is modified to fit the environments I more typically deploy (icinga under lighttpd, PAM auth, etc.)  The changes are not yet complete.
 
 Requirements
 ============
@@ -46,9 +46,9 @@ default
 
 The following attributes are used by both client and server recipes.
 
-* `node['nagios']['user']` - nagios user, default 'nagios'.
-* `node['nagios']['group']` - nagios group, default 'nagios'.
-* `node['nagios']['plugin_dir']` - location where nagios plugins go,
+* `node['icinga']['user']` - icinga user, default 'nagios'.
+* `node['icinga']['group']` - icinga group, default 'nagios'.
+* `node['icinga']['plugin_dir']` - location where nagios plugins go,
 * default '/usr/lib/nagios/plugins'.
 
 client
@@ -56,62 +56,62 @@ client
 
 The following attributes are used for the client NRPE checks for warning and critical levels.
 
-* `node['nagios']['client']['install_method']` - whether to install from package or source. Default chosen by platform based on known packages available for Nagios 3: debian/ubuntu 'package', redhat/centos/fedora/scientific: source
-* `node['nagios']['plugins']['url']` - url to retrieve the plugins source
-* `node['nagios']['plugins']['version']` - version of the plugins
-* `node['nagios']['plugins']['checksum']` - checksum of the plugins source tarball
-* `node['nagios']['nrpe']['home']` - home directory of nrpe, default /usr/lib/nagios
-* `node['nagios']['nrpe']['conf_dir']` - location of the nrpe configuration, default /etc/nagios
-* `node['nagios']['nrpe']['url']` - url to retrieve nrpe source
-* `node['nagios']['nrpe']['version']` - version of nrpe to download
-* `node['nagios']['nrpe']['checksum']` - checksum of the nrpe source tarball
-* `node['nagios']['checks']['memory']['critical']` - threshold of critical memory usage, default 150
-* `node['nagios']['checks']['memory']['warning']` - threshold of warning memory usage, default 250
-* `node['nagios']['checks']['load']['critical']` - threshold of critical load average, default 30,20,10
-* `node['nagios']['checks']['load']['warning']` - threshold of warning load average, default 15,10,5
-* `node['nagios']['checks']['smtp_host']` - default relayhost to check for connectivity. Default is an empty string, set via an attribute in a role.
-* `node['nagios']['server_role']` - the role that the nagios server will have in its run list that the clients can search for.
-* `node['nagios']['multi_environment_monitoring']` - Allow Nagios servers in any Chef environment to monitor NRPE
+* `node['icinga']['client']['install_method']` - whether to install from package or source. Default chosen by platform based on known packages available for Nagios 3: debian/ubuntu 'package', redhat/centos/fedora/scientific: source
+* `node['icinga']['plugins']['url']` - url to retrieve the plugins source
+* `node['icinga']['plugins']['version']` - version of the plugins
+* `node['icinga']['plugins']['checksum']` - checksum of the plugins source tarball
+* `node['icinga']['nrpe']['home']` - home directory of nrpe, default /usr/lib/icinga
+* `node['icinga']['nrpe']['conf_dir']` - location of the nrpe configuration, default /etc/icinga
+* `node['icinga']['nrpe']['url']` - url to retrieve nrpe source
+* `node['icinga']['nrpe']['version']` - version of nrpe to download
+* `node['icinga']['nrpe']['checksum']` - checksum of the nrpe source tarball
+* `node['icinga']['checks']['memory']['critical']` - threshold of critical memory usage, default 150
+* `node['icinga']['checks']['memory']['warning']` - threshold of warning memory usage, default 250
+* `node['icinga']['checks']['load']['critical']` - threshold of critical load average, default 30,20,10
+* `node['icinga']['checks']['load']['warning']` - threshold of warning load average, default 15,10,5
+* `node['icinga']['checks']['smtp_host']` - default relayhost to check for connectivity. Default is an empty string, set via an attribute in a role.
+* `node['icinga']['server_role']` - the role that the icinga server will have in its run list that the clients can search for.
+* `node['icinga']['multi_environment_monitoring']` - Allow Nagios servers in any Chef environment to monitor NRPE
 
 server
 ------
 
 Default directory locations are based on FHS. Change to suit your preferences.
 
-* `node['nagios']['server']['install_method']` - whether to install from package or source. Default chosen by platform based on known packages available for Nagios 3: debian/ubuntu 'package', redhat/centos/fedora/scientific: source
-* `node['nagios']['server']['service_name']` - name of the service used for nagios, default chosen by platform, debian/ubuntu "nagios3", redhat family "nagios", all others, "nagios"
-* `node['nagios']['server']['web_server']` - web server to use. supports apache or nginx, default "nginx"
-* `node['nagios']['server']['nginx_dispatch']` - nginx dispatch method. support cgi or php, default "cgi"
-* `node['nagios']['server']['stop_apache']` - stop apache service if using nginx, default false
-* `node['nagios']['home']` - nagios main home directory, default "/usr/lib/nagios3"
-* `node['nagios']['conf_dir']` - location where main nagios config lives, default "/etc/nagios3"
-* `node['nagios']['config_dir']` - location where included configuration files live, default "/etc/nagios3/conf.d"
-* `node['nagios']['log_dir']` - location of nagios logs, default "/var/log/nagios3"
-* `node['nagios']['cache_dir']` - location of cached data, default "/var/cache/nagios3"
-* `node['nagios']['state_dir']` - nagios runtime state information, default "/var/lib/nagios3"
-* `node['nagios']['run_dir']` - where pidfiles are stored, default "/var/run/nagios3"
-* `node['nagios']['docroot']` - nagios webui docroot, default "/usr/share/nagios3/htdocs"
-* `node['nagios']['enable_ssl]` - boolean for whether nagios web server should be https, default false
-* `node['nagios']['http_port']` - port that the apache server should listen on, determined whether ssl is enabled (443 if so, otherwise 80)
-* `node['nagios']['server_name']` - common name to use in a server cert, default "nagios"
-* `node['nagios']['ssl_req']` - info to use in a cert, default `/C=US/ST=Several/L=Locality/O=Example/OU=Operations/CN=#{node['nagios']['server_name']}/emailAddress=ops@#{node['nagios']['server_name']}`
+* `node['icinga']['server']['install_method']` - whether to install from package or source. Default chosen by platform based on known packages available for Nagios 3: debian/ubuntu 'package', redhat/centos/fedora/scientific: source
+* `node['icinga']['server']['service_name']` - name of the service used for icinga, default chosen by platform, debian/ubuntu "icinga", redhat family "icinga", all others, "icinga"
+* `node['icinga']['server']['web_server']` - web server to use. supports apache or nginx, default "nginx"
+* `node['icinga']['server']['nginx_dispatch']` - nginx dispatch method. support cgi or php, default "cgi"
+* `node['icinga']['server']['stop_apache']` - stop apache service if using nginx, default false
+* `node['icinga']['home']` - icinga main home directory, default "/usr/lib/icinga"
+* `node['icinga']['conf_dir']` - location where main icinga config lives, default "/etc/icinga"
+* `node['icinga']['config_dir']` - location where included configuration files live, default "/etc/icinga/conf.d"
+* `node['icinga']['log_dir']` - location of nagios logs, default "/var/log/icinga"
+* `node['icinga']['cache_dir']` - location of cached data, default "/var/cache/icinga"
+* `node['icinga']['state_dir']` - nagios runtime state information, default "/var/lib/icinga"
+* `node['icinga']['run_dir']` - where pidfiles are stored, default "/var/run/icinga"
+* `node['icinga']['docroot']` - icinga webui docroot, default "/usr/share/icinga/htdocs"
+* `node['icinga']['enable_ssl]` - boolean for whether icinga web server should be https, default false
+* `node['icinga']['http_port']` - port that the apache server should listen on, determined whether ssl is enabled (443 if so, otherwise 80)
+* `node['icinga']['server_name']` - common name to use in a server cert, default "icinga"
+* `node['icinga']['ssl_req']` - info to use in a cert, default `/C=US/ST=Several/L=Locality/O=Example/OU=Operations/CN=#{node['icinga']['server_name']}/emailAddress=ops@#{node['icinga']['server_name']}`
 
-* `node['nagios']['notifications_enabled']` - set to 1 to enable notification.
-* `node['nagios']['check_external_commands']`
-* `node['nagios']['default_contact_groups']`
-* `node['nagios']['sysadmin_email']` - default notification email.
-* `node['nagios']['sysadmin_sms_email']` - default notification sms.
-* `node['nagios']['server_auth_method']` - authentication with the server can be done with openid (using `apache2::mod_auth_openid`), or htauth (basic). The default is openid, any other value will use htauth (basic).
-* `node['nagios']['templates']`
-* `node['nagios']['interval_length']` - minimum interval.
-* `node['nagios']['default_host']['check_interval']`
-* `node['nagios']['default_host']['retry_interval']`
-* `node['nagios']['default_host']['max_check_attempts']`
-* `node['nagios']['default_host']['notification_interval']`
-* `node['nagios']['default_service']['check_interval']`
-* `node['nagios']['default_service']['retry_interval']`
-* `node['nagios']['default_service']['max_check_attempts']`
-* `node['nagios']['default_service']['notification_interval']`
+* `node['icinga']['notifications_enabled']` - set to 1 to enable notification.
+* `node['icinga']['check_external_commands']`
+* `node['icinga']['default_contact_groups']`
+* `node['icinga']['sysadmin_email']` - default notification email.
+* `node['icinga']['sysadmin_sms_email']` - default notification sms.
+* `node['icinga']['server_auth_method']` - authentication with the server can be done with openid (using `apache2::mod_auth_openid`), or htauth (basic). The default is openid, any other value will use htauth (basic).
+* `node['icinga']['templates']`
+* `node['icinga']['interval_length']` - minimum interval.
+* `node['icinga']['default_host']['check_interval']`
+* `node['icinga']['default_host']['retry_interval']`
+* `node['icinga']['default_host']['max_check_attempts']`
+* `node['icinga']['default_host']['notification_interval']`
+* `node['icinga']['default_service']['check_interval']`
+* `node['icinga']['default_service']['retry_interval']`
+* `node['icinga']['default_service']['max_check_attempts']`
+* `node['icinga']['default_service']['notification_interval']`
 
 Recipes
 =======
@@ -119,14 +119,14 @@ Recipes
 default
 -------
 
-Includes the `nagios::client` recipe.
+Includes the `icinga::client` recipe.
 
 client
 ------
 
-Includes the correct client installation recipe based on platform, either `nagios::client_package` or `nagios::client_source`.
+Includes the correct client installation recipe based on platform, either `icinga::client_package` or `icinga::client_source`.
 
-The client recipe searches for servers allowed to connect via NRPE that have a role named in the `node['nagios']['server_role']` attribute. The recipe will also install the required packages and start the NRPE service. A custom plugin for checking memory is also added.
+The client recipe searches for servers allowed to connect via NRPE that have a role named in the `node['icinga']['server_role']` attribute. The recipe will also install the required packages and start the NRPE service. A custom plugin for checking memory is also added.
 
 Searches are confined to the node's `chef_environment`.
 
@@ -145,9 +145,9 @@ Installs the Nagios client libraries from source. Default for Red Hat / CentOS /
 server
 ------
 
-Includes the correct client installation recipe based on platform, either `nagios::server_package` or `nagios::server_source`.
+Includes the correct client installation recipe based on platform, either `icinga::server_package` or `icinga::server_source`.
 
-The server recipe sets up Apache as the web front end. The nagios::client recipe is also included. This recipe also does a number of searches to dynamically build the hostgroups to monitor, hosts that belong to them and admins to notify of events/alerts.
+The server recipe sets up Apache as the web front end. The icinga::client recipe is also included. This recipe also does a number of searches to dynamically build the hostgroups to monitor, hosts that belong to them and admins to notify of events/alerts.
 
 Searches are confined to the node's `chef_environment`.
 
@@ -186,20 +186,20 @@ Installs the Nagios server libraries from source. Default for Red Hat / CentOS /
 pagerduty
 ---------
 
-Installs and configures pagerduty plugin for nagios.  You need to set a `node['nagios']['pagerduty_key']` attribute on your server for this to work.  This can be set through environments so that you can use different API keys for servers in production vs staging for instance.
+Installs and configures pagerduty plugin for icinga.  You need to set a `node['icinga']['pagerduty_key']` attribute on your server for this to work.  This can be set through environments so that you can use different API keys for servers in production vs staging for instance.
 
-This recipe was written based on the [Nagios Integration Guide](http://www.pagerduty.com/docs/guides/nagios-integration-guide) from PagerDuty which explains how to get an API key for your nagios server.
+This recipe was written based on the [Nagios Integration Guide](http://www.pagerduty.com/docs/guides/nagios-integration-guide) from PagerDuty which explains how to get an API key for your icinga server.
 
 email notifications
 --------------------
 
-You need to set `default['nagios']['notifications_enabled'] = 1` attribute on your nagios server to enable email notifications.
+You need to set `default['icinga']['notifications_enabled'] = 1` attribute on your icinga server to enable email notifications.
 
 For email notifications to work an appropriate mail program package and local MTA need to be installed so that /usr/bin/mail or /bin/mail is available on the system.
 
 Example:
 
-Include [postfix cookbook](https://github.com/opscode-cookbooks/postfix) to be installed on your nagios server node.
+Include [postfix cookbook](https://github.com/opscode-cookbooks/postfix) to be installed on your icinga server node.
 
 Add override_attributes to your `monitoring` role:
 
@@ -208,17 +208,17 @@ Add override_attributes to your `monitoring` role:
     name "monitoring"
     description "Monitoring Server"
     run_list(
-      "recipe[nagios::server]",
+      "recipe[icinga::server]",
       "recipe[postfix]"
     )
 
     override_attributes(
-      "nagios" => { "notifications_enabled" => "1" },
+      "icinga" => { "notifications_enabled" => "1" },
       "postfix" => { "myhostname":"your_hostname", "mydomain":"example.com" }
     )
 
     default_attributes(
-      "nagios" => { "server_auth_method" => "htauth" }
+      "icinga" => { "server_auth_method" => "htauth" }
     )
 
     % knife role from file monitoring.rb
@@ -236,13 +236,13 @@ Create a `users` data bag that will contain the users that will be able to log i
       "groups": "sysadmin",
       "htpasswd": "hashed_htpassword",
       "openid": "http://nagiosadmin.myopenid.com/",
-      "nagios": {
+      "icinga": {
         "pager": "nagiosadmin_pager@example.com",
         "email": "nagiosadmin@example.com"
       }
     }
 
-When using server_auth_method 'openid', use the openid in the data bag item. Any other value for this attribute (e.g., "htauth", "htpasswd", etc) will use the htpasswd value as the password in `/etc/nagios3/htpasswd.users`.
+When using server_auth_method 'openid', use the openid in the data bag item. Any other value for this attribute (e.g., "htauth", "htpasswd", etc) will use the htpasswd value as the password in `/etc/icinga/htpasswd.users`.
 
 The openid must have the http:// and trailing /. The htpasswd must be the hashed value. Get this value with htpasswd:
 
@@ -256,7 +256,7 @@ For example use the `{SHA}oCagzV4lMZyS7jl2Z0WlmLxEkt4=` value in the data bag.
 Services
 --------
 
-Create a nagios\_services data bag that will contain definitions for services to be monitored.  This allows you to add monitoring rules without mucking about in the services and commands templates.  Each service will be named based on the id of the data bag and the command will be named withe the same id prepended with "check\_".  Just make sure the id in your data bag doesn't conflict with a service or command already defined in the templates.
+Create a icinga\_services data bag that will contain definitions for services to be monitored.  This allows you to add monitoring rules without mucking about in the services and commands templates.  Each service will be named based on the id of the data bag and the command will be named withe the same id prepended with "check\_".  Just make sure the id in your data bag doesn't conflict with a service or command already defined in the templates.
 
 Here's an example of a service check for sshd that you could apply to all hostgroups:
 
@@ -269,7 +269,7 @@ Here's an example of a service check for sshd that you could apply to all hostgr
 Search Defined Hostgroups
 -------------------------
 
-Create a nagios\_hostgroups data bag that will contain definitions for Nagios hostgroups populated via search.  These data bags include a Chef node search query that will populate the Nagios hostgroup with nodes based on the search.
+Create a icinga\_hostgroups data bag that will contain definitions for Nagios hostgroups populated via search.  These data bags include a Chef node search query that will populate the Nagios hostgroup with nodes based on the search.
 
 Here's an example to find all HP hardware systems for an "hp_systems" hostgroup:
 
@@ -283,17 +283,17 @@ Here's an example to find all HP hardware systems for an "hp_systems" hostgroup:
 Roles
 =====
 
-Create a role to use for the monitoring server. The role name should match the value of the attribute "nagios[:server_role]". By default, this is 'monitoring'. For example:
+Create a role to use for the monitoring server. The role name should match the value of the attribute "icinga[:server_role]". By default, this is 'monitoring'. For example:
 
     % cat roles/monitoring.rb
     name "monitoring"
     description "Monitoring server"
     run_list(
-      "recipe[nagios::server]"
+      "recipe[icinga::server]"
     )
 
     default_attributes(
-      "nagios" => {
+      "icinga" => {
         "server_auth_method" => "htauth"
       }
     )
@@ -303,7 +303,7 @@ Create a role to use for the monitoring server. The role name should match the v
 Definitions
 ===========
 
-nagios_conf
+icinga_conf
 -----------
 
 This definition is used to drop in a configuration file in the base Nagios configuration directory's conf.d. This can be used for customized configurations for various services.
@@ -316,9 +316,9 @@ default
 
 The library included with the cookbook provides some helper methods used in templates.
 
-* nagios_boolean
-* nagios_interval - calculates interval based on interval length and a given number of seconds.
-* nagios_attr - retrieves a nagios attribute from the node.
+* icinga_boolean
+* icinga_interval - calculates interval based on interval length and a given number of seconds.
+* icinga_attr - retrieves a icinga attribute from the node.
 
 Resources/Providers
 ===================
@@ -335,21 +335,21 @@ The nrpecheck LWRP provides an easy way to add and remove NRPE checks from withi
 - command_name: name attribute.  The name of the check.  You'll need to reference this in your commands.cfg template
 - warning_condition: String that you will pass to the command with the -w flag
 - critical_condition: String that you will pass to the command with the -c flag
-- command: The actual command to execute (including the path). If this is not specified, this will use `node['nagios']['plugin_dir']/command_name` as the path to the command.
+- command: The actual command to execute (including the path). If this is not specified, this will use `node['icinga']['plugin_dir']/command_name` as the path to the command.
 - parameters: Any additional parameters you wish to pass to the plugin.
 
 # Examples
 
     # Use LWRP to define check_load
-    nagios_nrpecheck "check_load" do
-      command "#{node['nagios']['plugin_dir']}/check_load"
-      warning_condition node['nagios']['checks']['load']['warning']
-      critical_condition node['nagios']['checks']['load']['critical']
+    icinga_nrpecheck "check_load" do
+      command "#{node['icinga']['plugin_dir']}/check_load"
+      warning_condition node['icinga']['checks']['load']['warning']
+      critical_condition node['icinga']['checks']['load']['critical']
       action :add
     end
 
     # Remove the check_load definition
-    nagios_nrpecheck "check_load" do
+    icinga_nrpecheck "check_load" do
       action :remove
     end
 
@@ -360,13 +360,13 @@ See below under __Environments__ for how to set up Chef 0.10 environment for use
 
 For a Nagios server, create a role named 'monitoring', and add the following recipe to the run_list:
 
-    recipe[nagios::server]
+    recipe[icinga::server]
 
 This will allow client nodes to search for the server by this role and add its IP address to the allowed list for NRPE.
 
 To install Nagios and NRPE on a client node:
 
-    include_recipe "nagios::client"
+    include_recipe "icinga::client"
 
 This is a fairly complicated cookbook. For a walkthrough and example usage please see [Opscode's Nagios Quick Start](http://help.opscode.com/kb/otherhelp/nagios-quick-start).
 
