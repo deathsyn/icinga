@@ -1,0 +1,98 @@
+#!/bin/bash
+usage() {
+    echo "Usage: $0 [-p | --pidfile] [-n | --number (of PID)] [-w |--warning (level in kbytes)] [-c |--critical (level in kbytes)]"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    echo "No arguments supplied"
+    usage
+fi
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --pidfile | -p)
+            pidfile=$2
+            shift
+	    shift	
+            ;;
+        --warning | -w)
+            warnval=$2
+            shift
+            shift
+            ;;
+        --critical | -c)
+            critval=$2
+            shift
+            shift
+            ;;
+	--number | -n)
+	    pidnumber=$2
+	    shift
+	    shift
+	    ;;
+        *)
+            echo "Unknown argument: $1"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+#######Error Checking Section########
+if [ -z "$pidnumber" ] && [ -z "$pidfile" ]
+then
+echo "No PID number or PID file specified! Use -p|--pidfile or -n|--number to specify process."
+usage
+exit 2;
+elif [ ! -z "$pidnumber" ]
+then
+proc=$pidnumber
+else [ ! -z "$pidfile" ]
+proc=$(<$pidfile)
+fi
+if [ -z "$critval" ] && [ -z "$warnval" ]
+then
+echo "You must specify a warning and critical value in numeric percentage format"
+usage
+exit 2;
+elif [ -z "$critval" ]
+then
+echo "You must specify a critical value in number percentage format (e.g. -c 40)" 
+usage
+exit 2;
+elif [ -z "$warnval" ]
+then
+echo "You must specify a warning value in number percentage format (e.g. -w 40)"
+usage
+exit 2;
+fi
+
+if [ $warnval -ge "$critval" ]
+then
+echo "Your critical value must be set higher than your warning value."
+usage
+exit 2;
+fi
+
+
+###########Process the PID, RSS, and Size################# 
+line=`ps u -p $proc | tail -1` 
+process=`echo $line | awk '{ print $11 }'
+pid=`echo "$line" | awk '{ print $2 }'`
+rss=`echo "$line" | awk '{ print $6 }'` 
+size=`echo "$line" | awk '{ print $5 }'` 
+
+###### Status Checking and Output #########################
+if [ $size -ge "$critval" ]; then
+msg="CRITICAL: Process $process, PID $pid is running at $size, which is over $critval!!!!!"
+echo $msg
+exit 2; 
+elif [ $size -gt "$warnval" ]; then 
+msg="WARNING STATE: Process $process, PID $pid is running $size, which is over $warnval warning level!!" 
+echo $msg
+exit 1; 
+else
+msg="OK STATE: Process $process, PID $pid is running at $size, which is under the $warnval warning level"
+echo "$msg"
+exit 0;
+fi
