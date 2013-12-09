@@ -40,9 +40,9 @@ default['icinga']['nrpe']['dont_blame_nrpe']   = "0"
 default['icinga']['nrpe']['command_timeout']   = "60"
 
 # for plugin from source installation
-default['icinga']['plugins']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagiosplug'
-default['icinga']['plugins']['version']  = '1.4.16'
-default['icinga']['plugins']['checksum'] = 'b0caf07e0084e9b7f10fdd71cbd3ebabcd85ad78df64da360b51233b0e73b2bd'
+default['icinga']['plugins']['url']      = 'https://www.nagios-plugins.org/download'
+default['icinga']['plugins']['version']  = '1.5'
+default['icinga']['plugins']['checksum'] = 'fcc55e23bbf1c70bcf1a90749d30249955d4668a9b776b2521da023c5c2f2170'
 
 # for nrpe from source installation
 default['icinga']['nrpe']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagios'
