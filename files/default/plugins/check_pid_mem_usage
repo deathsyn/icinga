@@ -77,7 +77,7 @@ fi
 
 ###########Process the PID, RSS, and Size################# 
 line=`ps u -p $proc | tail -1` 
-process=`echo $line | awk '{ print $11 }'
+process=`echo $line | awk '{ print $11 }'`
 pid=`echo "$line" | awk '{ print $2 }'`
 rss=`echo "$line" | awk '{ print $6 }'` 
 size=`echo "$line" | awk '{ print $5 }'` 
