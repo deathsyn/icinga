@@ -24,14 +24,14 @@
 
 case node['platform']
 when "ubuntu","debian"
-  default['nagios']['client']['install_method'] = 'package'
-  default['nagios']['nrpe']['pidfile'] = '/var/run/nagios/nrpe.pid'
+  default['icinga']['client']['install_method'] = 'package'
+  default['icinga']['nrpe']['pidfile'] = '/var/run/nagios/nrpe.pid'
 when "redhat","centos","fedora","scientific","amazon"
-  default['nagios']['client']['install_method'] = 'source'
-  default['nagios']['nrpe']['pidfile'] = '/var/run/nrpe.pid'
+  default['icinga']['client']['install_method'] = 'source'
+  default['icinga']['nrpe']['pidfile'] = '/var/run/nrpe.pid'
 else
-  default['nagios']['client']['install_method'] = 'source'
-  default['nagios']['nrpe']['pidfile'] = '/var/run/nrpe.pid'
+  default['icinga']['client']['install_method'] = 'source'
+  default['icinga']['nrpe']['pidfile'] = '/var/run/nrpe.pid'
 end
 
 default['icinga']['nrpe']['home']              = "/usr/lib/nagios"
