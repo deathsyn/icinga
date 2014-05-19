@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
+# Author:: Keely Patrick <kaptrick@geoforce.com>
 # Cookbook Name:: icinga
-# Recipe:: client_package
+# Recipe:: redis
 #
-# Copyright 2011, Opscode, Inc
+# Copyright 2014, Geoforce, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,4 @@
 # limitations under the License.
 #
 
-%w{
-  nagios-plugins
-  nagios-plugins-basic
-  nagios-plugins-standard
-  nagios-plugins-contrib
-}.each do |pkg|
-  package pkg
-end
+gem_package "redis"
