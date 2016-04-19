@@ -24,5 +24,5 @@
   nagios-plugins-standard
   nagios-plugins-contrib
 }.each do |pkg|
-  package pkg
+  package pkg unless pkg == 'nagios-plugins-contrib' && node.platform_version == '12.04'
 end
